@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text to Speech Reader</title>
+  
+  <style>
+    :root {
+      --primary-blue: #1565c0;
+      --header-blue: #1155ab;
+      --light-bg: #e8f4fe;
+      --border-blue: #90caf9;
+      --text-color: #0d47a1;
+      --dark-text: #1a237e;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .tool-card {
+      width: 100%;
+      max-width: 600px;
+      background: #ffffff;
+      border: 2px solid var(--primary-blue);
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(21, 101, 192, 0.12);
+      overflow: hidden;
+    }
+
+    .header-box {
+      background: var(--header-blue);
+      color: #ffffff;
+      padding: 20px 16px;
+      text-align: center;
+    }
+
+    .header-box h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .header-box p {
+      margin: 5px 0 0 0;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .form-body {
+      padding: 20px 16px;
+    }
+
+    .input-group {
+      margin-bottom: 14px;
+    }
+
+    .input-group label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 6px;
+    }
+
+    .counter-text {
+      font-size: 11px;
+      color: #555;
+      font-weight: normal;
+    }
+
+    .custom-textarea {
+      width: 100%;
+      height: 150px;
+      padding: 12px;
+      font-size: 15px;
+      color: var(--dark-text);
+      background-color: #ffffff;
+      border: 1.5px solid var(--border-blue);
+      border-radius: 8px;
+      outline: none;
+      resize: vertical;
+      transition: all 0.2s ease;
+    }
+
+    .custom-textarea:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.15);
+    }
+
+    .custom-select, .custom-range {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark-text);
+      background-color: #ffffff;
+      border: 1.5px solid var(--border-blue);
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .section-card {
+      background: var(--light-bg);
+      border: 1.5px solid var(--border-blue);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 12px 6px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary { background: var(--primary-blue); color: #ffffff; }
+    .btn-primary:hover { background: var(--header-blue); }
+    
+    .btn-secondary { background: #455a64; color: #ffffff; }
+    .btn-secondary:hover { background: #37474f; }
+    
+    .btn-warning { background: #f57c00; color: #ffffff; }
+    .btn-warning:hover { background: #e65100; }
+    
+    .btn-danger { background: #e53935; color: #ffffff; }
+    .btn-danger:hover { background: #c62828; }
+
+    @media (max-width: 580px) {
+      body { padding: 8px; }
+      .controls-grid { grid-template-columns: 1fr; }
+      .header-box h2 { font-size: 20px; }
+      .btn-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="tool-card">
+  <div class="header-box">
+    <h2>Text to Speech Reader</h2>
+    <p>Listen to your written text with natural voice playback</p>
+  </div>
+
+  <div class="form-body">
+    
+    <!-- Text Input Area with Live Word & Character Counter -->
+    <div class="input-group">
+      <label for="textInput">
+        <span>Enter or Paste Your Text Below:</span>
+        <span class="counter-text"><span id="charCount">0</span> chars | <span id="wordCount">0</span> words</span>
+      </label>
+      <textarea id="textInput" class="custom-textarea" placeholder="Type or paste any text here and click Listen..." oninput="updateCounters()"></textarea>
+    </div>
+
+    <!-- Voice Settings -->
+    <div class="section-card">
+      <div class="controls-grid">
+        <div class="input-group" style="margin:0;">
+          <label for="voiceSelect">Select Voice / Language</label>
+          <select id="voiceSelect" class="custom-select"></select>
+        </div>
+
+        <div class="input-group" style="margin:0;">
+          <label for="rate">Reading Speed: <span id="rateVal">1</span>x</label>
+          <input type="range" id="rate" class="custom-range" min="0.5" max="2" value="1" step="0.1" oninput="document.getElementById('rateVal').innerText = this.value">
+        </div>
+      </div>
+
+      <div class="controls-grid" style="margin-top: 12px;">
+        <div class="input-group" style="margin:0;">
+          <label for="pitch">Voice Pitch: <span id="pitchVal">1</span></label>
+          <input type="range" id="pitch" class="custom-range" min="0.5" max="1.5" value="1" step="0.1" oninput="document.getElementById('pitchVal').innerText = this.value">
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btn-grid" style="margin-top: 14px;">
+        <button class="btn btn-primary" onclick="speakText()">Listen</button>
+        <button class="btn btn-warning" id="pauseBtn" onclick="pauseResumeText()">Pause</button>
+        <button class="btn btn-danger" onclick="stopText()">Stop</button>
+        <button class="btn btn-secondary" onclick="copyText()">Copy</button>
+        <button class="btn btn-secondary" onclick="clearText()">Clear</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const synth = window.speechSynthesis;
+  let voices = [];
+
+  function loadVoices() {
+    voices = synth.getVoices();
+    const voiceSelect = document.getElementById('voiceSelect');
+    voiceSelect.innerHTML = '';
+
+    if (voices.length === 0) {
+      const option = document.createElement('option');
+      option.textContent = "Default Browser Voice";
+      option.value = "default";
+      voiceSelect.appendChild(option);
+      return;
+    }
+
+    voices.forEach((voice) => {
+      const option = document.createElement('option');
+      option.textContent = voice.name + " (" + voice.lang + ")";
+      option.setAttribute('data-name', voice.name);
+      voiceSelect.appendChild(option);
+    });
+  }
+
+  loadVoices();
+  if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  function updateCounters() {
+    const text = document.getElementById('textInput').value;
+    document.getElementById('charCount').innerText = text.length;
+    const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+    document.getElementById('wordCount').innerText = words;
+  }
+
+  function speakText() {
+    if (synth.speaking && synth.paused) {
+      synth.resume();
+      document.getElementById('pauseBtn').innerText = "Pause";
+      return;
+    }
+
+    if (synth.speaking) {
+      synth.cancel();
+    }
+
+    const text = document.getElementById('textInput').value.trim();
+    if (!text) {
+      alert("Please enter some text to listen!");
+      return;
+    }
+
+    const utterThis = new SpeechSynthesisUtterance(text);
+    const selectedOption = document.getElementById('voiceSelect').selectedOptions[0];
+
+    if (selectedOption && selectedOption.getAttribute('data-name')) {
+      const selectedVoice = voices.find(v => v.name === selectedOption.getAttribute('data-name'));
+      if (selectedVoice) utterThis.voice = selectedVoice;
+    }
+
+    utterThis.rate = parseFloat(document.getElementById('rate').value);
+    utterThis.pitch = parseFloat(document.getElementById('pitch').value);
+
+    utterThis.onend = function () {
+      document.getElementById('pauseBtn').innerText = "Pause";
+    };
+
+    synth.speak(utterThis);
+    document.getElementById('pauseBtn').innerText = "Pause";
+  }
+
+  function pauseResumeText() {
+    if (synth.speaking) {
+      if (synth.paused) {
+        synth.resume();
+        document.getElementById('pauseBtn').innerText = "Pause";
+      } else {
+        synth.pause();
+        document.getElementById('pauseBtn').innerText = "Resume";
+      }
+    }
+  }
+
+  function stopText() {
+    if (synth.speaking) {
+      synth.cancel();
+      document.getElementById('pauseBtn').innerText = "Pause";
+    }
+  }
+
+  function clearText() {
+    stopText();
+    document.getElementById('textInput').value = '';
+    updateCounters();
+  }
+
+  function copyText() {
+    const text = document.getElementById('textInput').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Text copied to clipboard!");
+    });
+  }
+</script>
+
+</body>
+</html>
