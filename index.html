@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text to Speech Reader</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="tool-card">
+  <div class="header-box">
+    <h2>Text to Speech Reader</h2>
+    <p>Listen to your written text with natural voice playback</p>
+  </div>
+
+  <div class="form-body">
+    
+    <!-- Text Input Area with Live Word & Character Counter -->
+    <div class="input-group">
+      <label for="textInput">
+        <span>Enter or Paste Your Text Below:</span>
+        <span class="counter-text"><span id="charCount">0</span> chars | <span id="wordCount">0</span> words</span>
+      </label>
+      <textarea id="textInput" class="custom-textarea" placeholder="Type or paste any text here and click Listen..."></textarea>
+    </div>
+
+    <!-- Voice Settings -->
+    <div class="section-card">
+      <div class="controls-grid">
+        <div class="input-group" style="margin:0;">
+          <label for="voiceSelect">Select Voice / Language</label>
+          <select id="voiceSelect" class="custom-select"></select>
+        </div>
+
+        <div class="input-group" style="margin:0;">
+          <label for="rate">Reading Speed: <span id="rateVal">1</span>x</label>
+          <input type="range" id="rate" class="custom-range" min="0.5" max="2" value="1" step="0.1">
+        </div>
+      </div>
+
+      <div class="controls-grid" style="margin-top: 12px;">
+        <div class="input-group" style="margin:0;">
+          <label for="pitch">Voice Pitch: <span id="pitchVal">1</span></label>
+          <input type="range" id="pitch" class="custom-range" min="0.5" max="1.5" value="1" step="0.1">
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btn-grid" style="margin-top: 14px;">
+        <button class="btn btn-primary" id="listenBtn">Listen</button>
+        <button class="btn btn-warning" id="pauseBtn">Pause</button>
+        <button class="btn btn-danger" id="stopBtn">Stop</button>
+        <button class="btn btn-secondary" id="copyBtn">Copy</button>
+        <button class="btn btn-secondary" id="clearBtn">Clear</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
