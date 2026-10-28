@@ -155,7 +155,7 @@ body {
 .btn-danger:hover { background: #c62828; }
 
 @media (max-width: 580px) {
-  body { padding: 8px; }
+  body { padding: 0px; }
   .controls-grid { grid-template-columns: 1fr; }
   .header-box h2 { font-size: 20px; }
   .btn-grid { grid-template-columns: 1fr 1fr; }
